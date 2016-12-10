@@ -4,7 +4,7 @@ Este repositorio contiene ficheros `Dockerfile` que permiten construir distintas
 
 * Bases de datos 
 	- [Oracle 11g](basedatos/oracle/)
-	- [Postgres 9.2](basedatos/postgres/)
+	- [Postgres 9.2](basedatos/postgresql/)
 	- DB2
 	- SQLServer
 * Servidores de aplicaciones
