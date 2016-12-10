@@ -19,7 +19,7 @@ ENV SIGM_REPO http://casa.tecnoquia.com/SIGM/mvn-repo
 
 # Desplegar scripts de creación de base de datos
 RUN mkdir -p /var/lib/sigm 
-ADD deploy.sh /var/lib/sigm/deploy.sh
+ADD assets/deploy.sh /var/lib/sigm/deploy.sh
 ##ADD sigem_bd_dist-${SIGM_VERSION}-bd.zip /var/lib/sigm/sigem_bd_dist-${SIGM_VERSION}-bd.zip 
 
 # Instalación de bases de datos de SIGM
@@ -27,7 +27,7 @@ RUN chmod a+x /var/lib/sigm/deploy.sh && \
     /var/lib/sigm/deploy.sh
 
 # Entorno castellando para PostGres
-ADD set-spanish-lang-debian.sh /bin/set-spanish-lang-debian.sh
+ADD assets/set-spanish-lang-debian.sh /bin/set-spanish-lang-debian.sh
 RUN chmod a+x /bin/set-spanish-lang-debian.sh && /bin/set-spanish-lang-debian.sh
 ENV LANG		es_ES@euro
 
