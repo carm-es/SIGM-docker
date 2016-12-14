@@ -1,0 +1,10 @@
+<tomcat-users>
+  <role rolename="manager-gui"/>
+  <role rolename="probeuser" />
+  <role rolename="poweruser" />
+  <role rolename="poweruserplus" />
+  <role rolename="SigemWSClient" />
+  <user username="sigem"  password="sigem"    roles="SigemWSClient"/>
+  <user username="tomcat" password="passw0rd" roles="manager-gui,probeuser,poweruser,poweruserplus"/>
+</tomcat-users>
+
