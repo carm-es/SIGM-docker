@@ -45,6 +45,11 @@
     exit 5
  fi
 
+ if wget -O /tmp/probe.war -q "https://github.com/psi-probe/psi-probe/releases/download/2.4.0.SP1/probe.war"
+ then
+    mv /tmp/probe.war $CATALINA_HOME/webapps/
+ fi
+
  
  # Descargar cada uno de los WARS de SIGM y crear el Contexto
  for ctx in $(grep ':' Contextos.cfg | grep -v '#' | cut -d ':' -f 1)
