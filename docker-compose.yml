@@ -1,0 +1,10 @@
+basedatos:
+  image: sigm/oracle-11g:3.0.1-M2
+  ports:
+    - "1521:1521"
+srvapps:
+  image: sigm/tomcat7-jre7:3.0.1-M2
+  links:
+    - basedatos
+  ports:
+    - "8080:8080"
