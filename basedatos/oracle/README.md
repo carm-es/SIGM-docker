@@ -47,10 +47,24 @@ Contraseñas:
 * para los usuarios de SIGM *(sigemadmin,tramitadords_000,registrods_000, etc)*: `passw0rd`
 
 
-Si quiere visualizar cómo se ejecutan los scripts de inicialización de la base de datos, use:
+Si desea conectar desde un cliente Oracle (*toad, sqlplus, etc*) deberá añadir a su fichero `$TNS_ADMIN/tnsnames.ora` 
+la cadena de conexión a SIGM:
+
 ```
-docker run -p 1521:1521 -p 49160:22 -i sigm/oracle-11g:3.0.1-M2
+SIGM = (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = *DIR_IP*)(PORT = *PUERTO*))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = XE)
+    )
+  )
 ```
+
+..donde...
+
+* `*DIR_IP*` será la dirección IP del equipo que ejecuta el contenedor para Oracle *(ejemplos: 127.0.0.1, 192.168.1.20, etc)*
+* `*PUERTO*` será el puerto TCP que mapeó al 1521 al lanza el comando `docker run -p *PUERTO*:1521 ` 
+
 
 ### Personalización
 
@@ -66,7 +80,7 @@ Para tareas de desarrollo y depuración también se comentar la definición de `
 #ADD sigem_bd_dist-${SIGM_VERSION}-bd.zip /var/lib/sigm/sigem_bd_dist-${SIGM_VERSION}-bd.zip 
 ``` 
 
-Cada vez que cambie el `.zip` deberá ejecutar:
+Cada vez que cambie este `.zip` deberá ejecutar:
 ```
  docker build -t sigm/oracle-11g:3.0.1-M2 .
  docker run -p 1521:1521 -p 49160:22 -i sigm/oracle-11g:3.0.1-M2

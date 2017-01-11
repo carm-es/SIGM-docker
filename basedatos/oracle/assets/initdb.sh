@@ -22,3 +22,7 @@ for f in /docker-entrypoint-initdb.d/*; do
   esac
   echo
 done
+
+
+rm -f /docker-entrypoint-initdb.d/SIGM.sh
+service oracle-xe stop 

@@ -47,6 +47,12 @@
 SET escape on
 SET define off
 
+-- Evitar caducidad de contraseña
+ALTER PROFILE "DEFAULT" LIMIT PASSWORD_LIFE_TIME UNLIMITED;
+
+-- Cambiar la clave del system para que no caduque
+ALTER USER system IDENTIFIED BY oracle;
+
 -- Crear los tableSpaces
 CREATE TABLESPACE tbs_sigm_common DATAFILE 'tbs_common.dbf' SIZE 200M ONLINE;
 CREATE TABLESPACE tbs_sigm_audit_000  DATAFILE 'tbs_audit_000.dbf' SIZE  200M ONLINE;
@@ -157,7 +163,6 @@ echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s fwktd_audit_000/
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s fwktd_audit_000/passw0rd @tramitador/50-tramitador_auditoria_datos.sql
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s fwktd_audit_000/passw0rd @registro/06-insert_data_registro_auditoria_datos_oracle.sql
 
-
 echo "Inicializando registroDS_000" >&2
 
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s registrods_000/passw0rd @registro/01.1_create_tables_registro_sigem_oracle.sql
@@ -181,6 +186,10 @@ echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s registrods_000/p
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s registrods_000/passw0rd @repositorios_registro_sigem_oracle.sql
 
 
+echo "Importando Informes de SIGM" >&2
+/u01/app/oracle/product/11.2.0/xe/bin/imp  system/oracle file=registro/SCR_REPORTS.DMP touser=registrods_000 tables=SCR_REPORTS log=SCR_REPORTS_IMP.log ignore=Y
+
+
 echo "Inicializando fwktd-sirDS_000" >&2
 
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s fwktd_sirds_000/passw0rd @sir/fwktd-sir-create.sql
@@ -199,7 +208,13 @@ cat archivo/02.archivo-create-indexes-oracle.sql | sed -e "s+&1+tbs_sigm_000+g" 
 cp -f /tmp/aa archivo/02.archivo-create-indexes-oracle.sql
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s archivods_000/passw0rd @archivo/02.archivo-create-indexes-oracle.sql 
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s archivods_000/passw0rd @archivo/03.archivo-insert-data-oracle.sql
+
+# Evitar que los Ampersand se traten como vbles
+echo -e "SET DEFINE OFF \\n\\n" > /tmp/a
+cat archivo/04.archivo-insert-clob-oracle.sql >> /tmp/a
+cp -f /tmp/a  archivo/04.archivo-insert-clob-oracle.sql
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s archivods_000/passw0rd @archivo/04.archivo-insert-clob-oracle.sql
+
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s archivods_000/passw0rd @archivo/05.archivo-create-functions-oracle.sql
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s archivods_000/passw0rd @archivo/06.archivo-create-procedures-oracle.sql
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s archivods_000/passw0rd @archivo/07.archivo-personalization-oracle.sql
@@ -252,8 +267,11 @@ echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s tramitadords_000
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s tramitadords_000/passw0rd @tramitador/06.1b-datos_prototipos_plantillas_clob.sql
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s tramitadords_000/passw0rd @tramitador/06.2b-datos_prototipos_v1.9_clob.sql
 echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s tramitadords_000/passw0rd @tramitador/06.2b-datos_prototipos_v1.9_plantillas_clob.sql
-echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s tramitadords_000/passw0rd @tramitador/06.3-informes_estadisticos_clob.sql
+echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s tramitadords_000/passw0rd @tramitador/06.3-informes_estadisticos.sql 
+echo "exit;" | /u01/app/oracle/product/11.2.0/xe/bin/sqlplus -s tramitadords_000/passw0rd @tramitador/06.3-informes_estadisticos_clob.sql   
 
+
+rm -f /tmp/a /tmp/aa
 
 EOF
 

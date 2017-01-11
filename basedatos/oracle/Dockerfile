@@ -23,9 +23,9 @@ ENV SIGM_REPO http://casa.tecnoquia.com/SIGM/mvn-repo
 # Desplegar scripts de creación de base de datos
 RUN mkdir -p /var/lib/sigm 
 ADD assets/deploy.sh /var/lib/sigm/deploy.sh
-#ADD sigem_bd_dist-${SIGM_VERSION}-bd.zip /var/lib/sigm/sigem_bd_dist-${SIGM_VERSION}-bd.zip 
+## ADD sigem_bd_dist-${SIGM_VERSION}-bd.zip /var/lib/sigm/sigem_bd_dist-${SIGM_VERSION}-bd.zip 
 
-# Instalación de bases de datos de SIGM
+# Preparación de scripts de bases de datos de SIGM
 RUN chmod a+x /var/lib/sigm/deploy.sh && \
     /var/lib/sigm/deploy.sh
 
@@ -39,14 +39,17 @@ ENV NLS_LANG		spanish_spain.WE8ISO8859P15
 ENV ORACLE_HOME		/u01/app/oracle/product/11.2.0/xe
 ENV SQLPLUS		$ORACLE_HOME/bin/sqlplus
 
-# Startup 
-ADD assets/startup.sh		/usr/sbin/startup.sh
-RUN chmod a+x /usr/sbin/startup.sh
+# Inicializacion de la base de datos
+ADD assets/initdb.sh	/var/lib/sigm/initdb.sh
+RUN chmod a+x /var/lib/sigm/initdb.sh && \
+    /var/lib/sigm/initdb.sh && \
+    rm -fr /var/lib/sigm 
+
 
 #
 # Construir con:
 #   docker build -t sigm/oracle-11g:3.0.1-M2 .
 #
 # Ejecutar interactivo (y comprobar si falla algo con):
-#   docker run -p 1521:1521 -p 49160:22 -i sigm/oracle-11g:3.0.1-M2
+#   docker run -p 1521:1521 -p 49160:22 -d sigm/oracle-11g:3.0.1-M2
 #
