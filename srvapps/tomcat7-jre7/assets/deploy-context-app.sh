@@ -39,11 +39,10 @@
  Res=$( grep -i "^$1:" $FileConf | head -1 | cut -d ':' -f3 )
 
  # Descargar ... 
- echo "Descargarndo '$WAR.war' de '$SIGM_REPO'" >&2
- if ! wget -O $CATALINA_HOME/webapps/$CTX.war -q "$SIGM_REPO/es/ieci/tecdoc/sigem/$WAR/${SIGM_VERSION}/$WAR-${SIGM_VERSION}.war"
+ if [ ! -e  $CATALINA_HOME/webapps/$CTX.war ]
  then
-    echo "ERROR: En la descarga de '$SIGM_REPO/es/ieci/tecdoc/sigem/$WAR/${SIGM_VERSION}/$WAR-${SIGM_VERSION}.war' ... no se puede continuar" >&2
-    exit 3
+    echo "WARNING: No se encontró $CATALINA_HOME/webapps/$CTX.war: Se ignora $1..." >&2
+    exit 0
  fi
 
  # Para los temporales...

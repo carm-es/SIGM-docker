@@ -49,3 +49,8 @@ SIGEM/logs/SIGEM_SessionUsuarioWS
 SIGEM/logs/SIGEM_TercerosWS
 SIGEM/logs/SIGEM_TramitacionWeb
 temporales/reports-temp
+SIGEM/temp/temporary
+SIGEM/temp/templates
+SIGEM/temp/reports
+SIGEM/temp/reports/images
+

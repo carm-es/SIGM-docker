@@ -2,19 +2,28 @@
 #
 # Antes de lanzar el TOMCAT ...
 
-# Copiar el driver jdbc
-JarJDBC=$(find /var/lib/sigm/driversJdbc -type f -name "*jar" | grep -i "$BD_TYPE" | sort -u | tail -1 )
-if [ "" = "$JarJDBC" ]
+# Comprobar que se tiene definida la vble CONEXION_BBDD
+if [ "" = "$CONEXION_BBDD" ]
 then
-  echo "ERROR: No se pudo encontrar driver jdbc para '$DB_TYPE'"
-  exit 4
+   echo "ERROR: No se encontró definida la vble $CONEXION_BBDD" >&2
+   exit 5
 fi
-cp $JarJDBC $CATALINA_HOME/lib/
+export BD_TYPE=$( echo $CONEXION_BBDD | cut -d ':' -f 1 )
+export BD_HOST=$( echo $CONEXION_BBDD | cut -d ':' -f 2 )
+export BD_PORT=$( echo $CONEXION_BBDD | cut -d ':' -f 3 )
+export BD_SID=$( echo $CONEXION_BBDD | cut -d ':' -f 4 )
 
+# Iniciar vsftpd
+/etc/init.d/vsftpd start
+
+# Iniciar LibreOffice
+/bin/start_open_office_nox.sh
 
 # Crear los Recursos JDBC en server.xml
-if /var/lib/sigm/ConfigTomcat.sh
+now=$(date '+%y%m%d_%H%M%S')
+if /var/lib/sigm/deploy-config-wars-sigm.sh > /var/lib/sigm/deploy-config.$now.log
 then
    cd $CATALINA_HOME
+   export JAVA_OPTS=" -Djava.awt.headless=true -XX:MaxPermSize=512M -Dcom.sun.management.jmxremote=true "
    catalina.sh run
 fi

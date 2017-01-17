@@ -29,12 +29,18 @@ docker run -p 8080:8080 -d sigm/tomcat7-jre7:3.0.1-M2
 Una vez iniciado el servidor podrá acceder a las siguientes URLs:
 
 * [http://localhost:8080/manager/html](http://localhost:8080/manager/html) Para acceder al administrador de Tomcat. Use como credenciales `tomcat/passw0rd`.
+* [http://localhost:8080/probe/](http://localhost:8080/probe/) Para acceder a PSI Probe y monitorizar el servidor Tomcat. Use como credenciales `tomcat/passw0rd`.
 * [http://localhost:8080/portal/](http://localhost:8080/portal/) Para acceder a la pantalla de acceso de SIGM.
 
 
 Para acceder a las aplicaciones de administración, use: `administrador/administrador`
 
-Para acceder a las aplicaciones de gestión, use: `sigem/sigem`
+Para acceder a las aplicaciones de gestión, use: 
+* `sigem/sigem`
+* `REGISTRO_TELEMATICO/REGISTRO_TELEMATICO`
+* `tramitador/tramitador`
+* `archivo/archivo`
+
 
 
 ### Personalización
@@ -47,20 +53,22 @@ Existen dos variables en el fichero `Dokerfile` que controlan el despliegue de l
 El despliegue descargará con `wget` de la URL `SIGM_REPO` todos los Wars y ZIPs necesarios para ejecutar la versión `SIGM_VERSION` en el 
 servidor de aplicaciones.
 
-Además, exsiten cuatro variables que configuran el servidor de base de datos a usar:
+Además, existe una variable que permite configurar el servidor de base de datos a usar: `CONEXION_BBDD` y su valor contendrá siempre `BD_TYPE:BD_HOST:BD_PORT:BD_SID`, donde...
 
-* **`BD_TYPE`** mediante el que puede indicar el tipo de servidor de base de datos que usará el servidor de aplicaciones. Los posibles valores que aceptará esta variable son: `oracle`, `postgresql`, `db2` ó `sqlserver`.
-* **`BD_HOST`** mediante el que puede indicar la dirección IP del servidor de base de datos *(ejemplos: 192.168.2.45, localhost, ...)*
-* **`BD_PORT`** mediante el que se le indica el puerto TCP donde escuchará conexiones el servidor de base de datos
-* **`BD_SID`** que permite especificar el SID de la base de datos (sólo para el tipo `oracle`), por defecto valdrá `XE`
+* **`BD_TYPE`** indica el tipo de servidor de base de datos que usará el servidor de aplicaciones. Los posibles valores que aceptará esta variable son: `oracle`, `postgresql`, `db2` ó `sqlserver`.
+* **`BD_HOST`** indica la dirección IP del servidor de base de datos *(ejemplos: 192.168.2.45, localhost, ...)*
+* **`BD_PORT`** indica el puerto TCP donde escuchará conexiones el servidor de base de datos *(ejemplos: 1521, 8456, ...)*
+* **`BD_SID`** especifica el SID de la base de datos (sólo para el tipo `oracle`),  *(ejemplos: XE, SIGMDES, ...)*
 
-Estas variables pueden indicarse en línea, al ejecutar el docker:
+Esta variable puede indicarse en línea, al ejecutar el docker:
 
 ```
-docker run -p 8080:8080 -e DB_TYPE=postgres -e DB_HOST=localhost -e DB_PORT=5436 -d sigm/tomcat7-jre7:3.0.1-M2
+docker run -p 8080:8080 -e CONEXION_BBDD=postgres:192.168.3.120:5436:: -d sigm/tomcat7-jre7:3.0.1-M2
 ```
 
-Si desea conectar este docker a una base de datos ya existente, revise el fichero `assets/ConexionBD.cfg`. En él se configuran los usuarios, contraseñas y bases de datos a los que conectarán las aplicaciones. Inicialmente está preconfigurado para conectar a alguno de los dockers de SIGM para base de datos, pero si su intención es probar una versión del servidor de aplicaciones contra otra base de datos deberá editar este fichero y personalizarlo para su caso. Luego tendrá que ejecutar `docker build` antes de poder ejecutar `docker run`.
+Si desea conectar este docker a una base de datos ya existente, revise el fichero `config/ConexionBD.cfg`. En él se configuran los usuarios, contraseñas y bases de datos a los que conectarán las aplicaciones. Inicialmente está preconfigurado para conectar a alguno de los dockers de SIGM para base de datos, pero si su intención es probar una versión del servidor de aplicaciones contra otra base de datos deberá editar este fichero y personalizarlo para su caso. Luego tendrá que ejecutar `docker build` antes de poder ejecutar `docker run`.
+
+El listado de WARs a desplegar se indica en `config/Contextos.cfg`: Elimine las líneas que se corresponden a los Wars que no tiene interés en usar. Luego deberá ejecutar `docker build` antes de poder ejecutar `docker run`.
 
 
 También podrá personalizar la imagen para comprobar el despliegue de SIGM sobre otras versiones de Tomcat y Jre, de forma rápida. Para ello deberá editar el fichero `Dockerfile` y cambiar:

@@ -15,14 +15,8 @@
  cd $WorkDir 
 
  # Crear el usuario sigem (en unix)
- useradd sigem  -m
-
- # Crear estructura de directorios (faltan todos los LOGs, los ficheros de archivo, etc...)
- for dir in $(cat $WorkDir/ListaDirectorios )
- do
-    mkdir -p /home/sigem/$dir
- done
- chmod 777 -R /home/sigem
+ useradd sigem -m
+ echo -e "sigem\nsigem\n" | passwd sigem
 
  # Descargar la configuracion de SIGEM
  if [ "" != "$SIGM_REPO" ]
@@ -54,7 +48,7 @@
  # Descargar cada uno de los WARS de SIGM y crear el Contexto
  for ctx in $(grep ':' Contextos.cfg | grep -v '#' | cut -d ':' -f 1)
  do
-    bash CreateContext.sh $ctx
+    bash download-sigm-war.sh $ctx
  done 
 
  # Extraer los drivers JDBC...
@@ -62,15 +56,7 @@
  unzip $WorkDir/bd.zip 'driversJdbc/*'
 
 
- # Ahora descomprimir la configuración
- cd /home/sigem/SIGEM/conf
- unzip $WorkDir/config.zip
-
- # Se supone que ahora debería parsearse para cambiar
- # la configuración de acceso a base de datos...
- #  en la configuración por el tema de JBOSS, env/comp/jdbc etc...
-
- # El vsftp, el openoffice
+ # TODO: El vsftp, el openoffice
  
  
  

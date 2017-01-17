@@ -11,7 +11,7 @@
 
  WorkDir="/var/lib/sigm"
  Cfg="ConexionBD.cfg"
- Scp="CreateResource.sh"
+ Scp="create-jndi-resource.sh"
 
  # Comprobar variables...
  [ "" = "$CATALINA_HOME" ] && echo "ERROR: La variable CATALINA_HOME debe estar definida" >&2  && exit 5
