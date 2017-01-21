@@ -1,0 +1,3 @@
+[submodule "basedatos/oracle-11g"]
+	path = basedatos/oracle-11g
+	url = https://github.com/carm-es/docker-sigm-oracle-xe-11g
