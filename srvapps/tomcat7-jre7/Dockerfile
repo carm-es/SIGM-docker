@@ -59,5 +59,5 @@ CMD ["/var/lib/sigm/run-tomcat.sh", "run"]
 #   docker build -t sigm/tomcat7-jre7:3.0.1-M2 .
 #
 # Ejecutar interactivo (y comprobar si falla algo con):
-#   docker run -p 8080:8080 -i sigm/tomcat7-jre7:3.0.1-M2
+#   docker run -p 8080:8080 -p 8443:8443  -i sigm/tomcat7-jre7:3.0.1-M2
 #
