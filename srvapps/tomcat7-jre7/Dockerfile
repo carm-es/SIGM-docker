@@ -15,7 +15,8 @@ ENV SIGM_VERSION 3.0.1-M2
 
 # Fijar Repositorio de artefactos
 # Si no se establece habrá que añadir todos los WARs
-ENV SIGM_REPO http://casa.tecnoquia.com/SIGM/mvn-repo
+ENV SIGM_REPO https://inexus.carm.es/nexus/content/repositories/sigm
+
 
 # Donde está instalado Tomcat
 ENV CATALINA_HOME /usr/local/tomcat
