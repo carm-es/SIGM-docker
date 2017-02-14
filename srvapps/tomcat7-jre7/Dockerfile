@@ -44,12 +44,15 @@ ADD assets/deploy-tomcat-resources-db.sh     /var/lib/sigm/deploy-tomcat-resourc
 ADD assets/download-sigm-war.sh              /var/lib/sigm/download-sigm-war.sh
 ADD assets/run-tomcat.sh                     /var/lib/sigm/run-tomcat.sh
 
-# Descarga de elementos y preparación del contenedor
+# Añadir certificados de las CAs en las que se confiará
+ADD config/CAs-Trusted.zip      $CATALINA_HOME/CAs-Trusted.zip
+
+# Desplegar realmente la configuración del contenedor
 RUN chmod a+x /var/lib/sigm/*.sh && \
     chmod a+x /bin/start_open_office_nox.sh && \
     /var/lib/sigm/deploy-docker.sh
 
-ENV CONEXION_BBDD  oracle:192.168.2.63:1521:XE
+ENV CONEXION_BBDD  oracle:147.84.6.99:1521:XE
 
 EXPOSE 8080
 EXPOSE 8443

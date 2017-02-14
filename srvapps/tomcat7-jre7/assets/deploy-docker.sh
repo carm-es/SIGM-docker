@@ -56,7 +56,22 @@
  unzip $WorkDir/bd.zip 'driversJdbc/*'
 
 
- # TODO: El vsftp, el openoffice
- 
+ # Añadir las CAs al CACERTS de JAVA...
+ Hoy=$( date  '+%Y%m' )
+ mkdir /tmp/cas_$Hoy
+ cd /tmp/cas_$Hoy
+ unzip $CATALINA_HOME/CAs-Trusted.zip
+
+ for i in *
+ do
+    a=$(echo $i | sed -e 's+\.+_+g' )
+    yes | $JAVA_HOME/bin/keytool -importcert -keystore $JAVA_HOME/lib/security/cacerts -storepass changeit -file $i -alias "${a}_$Hoy"
+ done 
+
+ cd -
+ rm -fr /tmp/cas_$Hoy
+
+
+
  
  
